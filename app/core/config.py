@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
-    cors_origins: list[str] = []
+    cors_origins: str = ""
 
     @field_validator("jwt_secret_key")
     @classmethod
@@ -27,6 +27,10 @@ class Settings(BaseSettings):
         if value != "HS256":
             raise ValueError("Only HS256 is supported")
         return value
+
+    @property
+    def trusted_cors_origins(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
 
 @lru_cache
