@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api/v1/attendance", tags=["attendance"])
 def check_in(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.employee_id is None:
         raise HTTPException(status_code=409, detail="User is not linked to an employee record")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     today = now.date()
     record = db.query(Attendance).filter(
         Attendance.organization_id == current_user.organization_id,
@@ -39,6 +39,6 @@ def check_in(db: Session = Depends(get_db), current_user: User = Depends(get_cur
         db.commit()
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=409, detail="Attendance record already exists")
+        raise HTTPException(status_code=409, detail="Attendance record already exists") from None
     db.refresh(record)
     return record
