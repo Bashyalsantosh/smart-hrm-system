@@ -12,7 +12,9 @@ router = APIRouter(prefix="/api/v1/auth", tags=["authentication"])
 @router.post("/login", response_model=TokenResponse)
 def login(data: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(User).filter(
-        User.username == data.username, User.is_active.is_(True)
+        User.organization_id == data.organization_id,
+        User.username == data.username,
+        User.is_active.is_(True),
     ).first()
     if user is None or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid username or password")
