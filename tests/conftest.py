@@ -32,7 +32,8 @@ def client():
     app.dependency_overrides[get_db] = override_get_db
     with testing_session() as db:
         org = Organization(name="Test Org")
-        db.add(org)
+        other_org = Organization(name="Other Tenant")
+        db.add_all([org, other_org])
         db.flush()
         employee = Employee(
             organization_id=org.id,
@@ -42,7 +43,15 @@ def client():
             email="test.employee@example.com",
             date_joined=date(2025, 1, 1),
         )
-        db.add(employee)
+        foreign_employee = Employee(
+            organization_id=other_org.id,
+            employee_code="FOREIGN-1",
+            first_name="Private",
+            last_name="Record",
+            email="private@example.com",
+            date_joined=date(2024, 1, 1),
+        )
+        db.add_all([employee, foreign_employee])
         db.flush()
         db.add(User(
             organization_id=org.id,
