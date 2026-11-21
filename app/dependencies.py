@@ -24,7 +24,7 @@ def get_current_user(
         user_id = int(claims["sub"])
         organization_id = int(claims["org"])
     except Exception:
-        raise unauthorized
+        raise unauthorized from None
     user = db.query(User).filter(
         User.id == user_id,
         User.organization_id == organization_id,
