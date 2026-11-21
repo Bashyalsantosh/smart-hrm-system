@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class LoginRequest(BaseModel):
+    organization_id: int = Field(gt=0)
     username: str = Field(min_length=2, max_length=80)
     password: str = Field(min_length=1, max_length=256)
 
