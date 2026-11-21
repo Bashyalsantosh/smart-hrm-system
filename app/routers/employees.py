@@ -31,7 +31,7 @@ def create_employee(
         db.commit()
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=409, detail="Employee code already exists")
+        raise HTTPException(status_code=409, detail="Employee code already exists") from None
     db.refresh(employee)
     return employee
 
