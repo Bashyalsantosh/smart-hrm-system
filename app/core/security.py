@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import jwt
@@ -24,7 +24,7 @@ def verify_password(password: str, encoded: str) -> bool:
 
 def create_access_token(subject: str, organization_id: int, role: str) -> str:
     settings = get_settings()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload: dict[str, Any] = {
         "sub": subject, "org": organization_id, "role": role,
         "iat": now, "exp": now + timedelta(minutes=settings.access_token_expire_minutes),
