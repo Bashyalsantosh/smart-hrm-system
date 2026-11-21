@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "feat/**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Test
+        env:
+          JWT_SECRET_KEY: ci-only-secret-key-that-is-long-enough-123456
+          DATABASE_URL: sqlite:///./ci.db
+        run: pytest --cov=app --cov-report=term-missing
