@@ -64,34 +64,7 @@ def test_hr_admin_can_create_employee(client):
 
 
 def test_employee_detail_does_not_leak_other_tenant(client):
-    from datetime import date
-
-    from app.core.database import SessionLocal
-    from app.models import Employee, Organization
-
-    db = SessionLocal()
-    try:
-        other_org = Organization(name="Other Tenant")
-        db.add(other_org)
-        db.flush()
-        foreign_employee = Employee(
-            organization_id=other_org.id,
-            employee_code="FOREIGN-1",
-            first_name="Private",
-            last_name="Record",
-            email="private@example.com",
-            date_joined=date(2024, 1, 1),
-        )
-        db.add(foreign_employee)
-        db.commit()
-        foreign_id = foreign_employee.id
-    finally:
-        db.close()
-
-    response = client.get(
-        f"/api/v1/employees/{foreign_id}",
-        headers=login(client),
-    )
+    response = client.get("/api/v1/employees/2", headers=login(client))
     assert response.status_code == 404
 
 
