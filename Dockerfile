@@ -5,6 +5,9 @@ WORKDIR /srv/smart-hrm
 
 COPY pyproject.toml ./
 COPY app ./app
+COPY alembic.ini ./
+COPY alembic ./alembic
+COPY scripts ./scripts
 RUN pip install --no-cache-dir .
 
 RUN useradd --create-home --uid 10001 appuser
