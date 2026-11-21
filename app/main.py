@@ -12,10 +12,10 @@ app = FastAPI(
     version="0.2.0",
     description="Multi-tenant Human Resource Management API",
 )
-if settings.cors_origins:
+if settings.trusted_cors_origins:
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins,
+        allow_origins=settings.trusted_cors_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST", "PATCH", "DELETE"],
         allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
